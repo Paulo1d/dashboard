@@ -1,74 +1,96 @@
 import streamlit as st
-import pandas as pd
-import plotly.express as px
+import base64
 
-
- # Configurar layout do Streamlit
+# Configuração da página
 st.set_page_config(layout="wide")
 
-# Estilos CSS
-st.markdown(
-    """
+# Função para definir a imagem de fundo
+def set_background(image_file):
+    with open(image_file, "rb") as image:
+        encoded_image = base64.b64encode(image.read()).decode()
+    
+    background_style = f"""
     <style>
-        body, .stApp {
-            background-color: white !important;
-            color: black !important;
-        }
+    .stApp {{
+        background: url("data:image/png;base64,{encoded_image}") no-repeat center center fixed;
+        background-size: cover;
+    }}
+    .block-container {{
+        padding: 3rem;
+    }}
+    .stButton>button {{
+        width: 100%;  /* Tamanho ajustado dos botões */
+        height: 120px;  
+        background-color: rgba(0,0,0,0); /* Totalmente transparente */
+        border: none;  /* Sem bordas brancas */
+        cursor: pointer;
+    }}
+    .button-container {{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 160px;
+    }}
     </style>
-    """,
-    unsafe_allow_html=True
-)
+    """
+    st.markdown(background_style, unsafe_allow_html=True)
 
-# Título do Dashboard
-st.markdown("<h1 style='text-align: center; color: black;'>🚢 DP ASSURANCE</h1>", unsafe_allow_html=True)
+# Aplicar imagem de fundo no dashboard principal
+set_background("Frame 1.png")
 
-# Dados para o KPI 1 - Gráfico de Barras com todas as barras do mesmo tamanho
-df_kpi1 = pd.DataFrame({
-    "Vessels": ["Amy Chouest", "Bram Buccaneer", "Bram Buck", "Bram Hero", "C- Atlas", "C- Sailor", "Campos Commander", "Mr. Chafic", "Campos Clipper", "Oryx", "Reedbuck"],
-    "Quantidade": [1] * 11  # Todas as barras do mesmo tamanho
-})
-fig1 = px.bar(df_kpi1, x="Vessels", y="Quantidade", title="🛳 Embarcações Pendentes",
-              color_discrete_sequence=["#0077b6"])
+# Esconder menu e rodapé do Streamlit
+hide_menu_style = """
+    <style>
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
+    </style>
+"""
+st.markdown(hide_menu_style, unsafe_allow_html=True)
 
-# Dados para o KPI 2 - Gráfico de Pizza
-df_pizza = pd.DataFrame({
-    "Status": ["Pendentes", "Concluídas"],
-    "Quantidade": [11, 39]
-})
-fig2 = px.pie(df_pizza, names="Status", values="Quantidade", title="🛳 Embarcações Pendentes vs Concluídas",
-              color_discrete_sequence=["#0077b6", "#00a8e8"])
+# Criar espaçamento para alinhar corretamente os botões
+st.markdown("<br>", unsafe_allow_html=True)
 
-# Dados para o KPI 3 - Embarcações por Quantidade de Pendências
-df_pendencias = pd.DataFrame({
-    "Vessels": ["Bram Atlas", "Bram Bahia", "Bram Boa Vista", "Bram Natal", "Bushbuck", "C- Warrior"],
-    "Pendências": [4, 4, 4, 2, 3, 1]
-})
-fig3 = px.bar(df_pendencias, x="Vessels", y="Pendências", title="⚠️ Pendências por Embarcação",
-              color_discrete_sequence=["#0077b6"])
+# Criar os botões invisíveis que levam para outros dashboards
+col1, col2, col3 = st.columns([1, 1, 1], gap="large")  
 
-# Dados para o KPI 4 - Gráfico de Dispersão
-df_grafico4 = pd.DataFrame({
-    "Vessels": ["Bram Force", "Bram Spirit", "Bruce Kay", "Campos Carrier", "Campos Challenger", "Corcovado"],
-    "Ano": [2024, 2024, 2024, 2024, 2024, 2024]
-})
-fig4 = px.scatter(df_grafico4, x="Vessels", y="Ano", title="📅 Embarcações com Report Pendentes",
-                  color_discrete_sequence=["#0077b6"])
-
-# Layout Profissional - 2 KPIs em cima, 2 embaixo
-st.markdown("<h3 style='text-align: center; color: black;'>KPIs Principais</h3>", unsafe_allow_html=True)
-
-col1, col2 = st.columns(2)
 with col1:
-    st.plotly_chart(fig1, use_container_width=True)
+    st.markdown('<div class="button-container">', unsafe_allow_html=True)
+    if st.button("", key="btn1"):  # Botão invisível
+        st.switch_page("pages/dashboard_1.py")  # Vai para dashboard_1.py
+    st.markdown('</div>', unsafe_allow_html=True)
 
 with col2:
-    st.plotly_chart(fig2, use_container_width=True)
+    st.markdown('<div class="button-container">', unsafe_allow_html=True)  
+    if st.button("", key="btn2"):
+        st.switch_page("pages/dashboard_2.py")  
+    st.markdown('</div>', unsafe_allow_html=True)
 
-st.markdown("<hr>", unsafe_allow_html=True)
-
-col3, col4 = st.columns(2)
 with col3:
-    st.plotly_chart(fig3, use_container_width=True)
+    st.markdown('<div class="button-container">', unsafe_allow_html=True)
+    if st.button("", key="btn3"):
+        st.switch_page("pages/dashboard_3.py")  
+    st.markdown('</div>', unsafe_allow_html=True)
+
+# Ajustar espaçamento entre os botões
+st.markdown("<br>", unsafe_allow_html=True)
+
+col4, col5, col6 = st.columns([1, 1, 1], gap="large")  
 
 with col4:
-    st.plotly_chart(fig4, use_container_width=True)
+    st.markdown('<div class="button-container">', unsafe_allow_html=True)
+    if st.button("", key="btn4"):
+        st.switch_page("pages/dashboard_4.py")  
+    st.markdown('</div>', unsafe_allow_html=True)
+
+with col5:
+    st.markdown('<div class="button-container">', unsafe_allow_html=True)  
+    if st.button("", key="btn5"):
+        st.switch_page("pages/dashboard_5.py")  
+    st.markdown('</div>', unsafe_allow_html=True)
+
+with col6:
+    st.markdown('<div class="button-container">', unsafe_allow_html=True)
+    if st.button("", key="btn6"):
+        st.switch_page("pages/dashboard_6.py")  
+    st.markdown('</div>', unsafe_allow_html=True)
